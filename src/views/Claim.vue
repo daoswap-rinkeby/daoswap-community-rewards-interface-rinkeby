@@ -354,12 +354,13 @@ export default {
               })
               .catch(e => {
                 console.info(e);
+              })
+              .then(() => {
+                this.state.fetching = false;
               });
           })
           .catch(e => {
             console.info(e);
-          })
-          .then(() => {
             this.state.fetching = false;
           });
       }
