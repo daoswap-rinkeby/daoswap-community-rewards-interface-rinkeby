@@ -9,7 +9,9 @@
                 <v-avatar size="24" class="mr-2">
                   <img :src="require('@/assets/logo.png')" alt="DOI" />
                 </v-avatar>
-                <span class="title font-weight-light">DOI Balance</span>
+                <span class="title font-weight-light">
+                  DOI {{ $t("Available Amount") }}
+                </span>
               </v-card-title>
               <v-card-text>
                 <v-row align="center">
@@ -28,19 +30,19 @@
                   @click="openClaimDialog"
                   :disabled="state.assets.rewardsBalance <= 0"
                 >
-                  Claim
+                  {{ $t("Claim") }}
                 </v-btn>
                 <v-dialog v-model="dialog" persistent max-width="600px">
                   <v-card>
                     <form>
                       <v-card-title>
-                        <span class="headline">Claim</span>
+                        <span class="headline">{{ $t("Claim") }}</span>
                       </v-card-title>
                       <v-card-text>
                         <v-text-field
                           v-model="claimAmount"
                           :error-messages="claimAmountErrors"
-                          label="Claim Amount"
+                          :label="$t('ClaimForm.Claim Amount')"
                           required
                           @input="$v.claimAmount.$touch()"
                           @blur="$v.claimAmount.$touch()"
@@ -50,14 +52,14 @@
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn @click="close">
-                          Close
+                          {{ $t("Close") }}
                         </v-btn>
                         <v-btn
                           color="blue darken-1"
                           class="white--text"
                           @click="submit"
                         >
-                          Submit
+                          {{ $t("Submit") }}
                         </v-btn>
                       </v-card-actions>
                     </form>
@@ -69,7 +71,7 @@
           <v-card justify="center" class="fill-width mt-10">
             <v-card-title>
               <span class="title font-weight-light">
-                Current Token Address
+                {{ $t("Current Token Address") }}
               </span>
             </v-card-title>
             <v-divider></v-divider>
@@ -89,7 +91,7 @@
             </v-card-text>
             <v-card-actions class="justify-center">
               <v-btn @click="resetApp">
-                Disconnect Wallet
+                {{ $t("Disconnect Wallet") }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -108,7 +110,7 @@
             color="deep-orange darken-4 white--text"
             @click="onConnect"
           >
-            Connect Wallet
+            {{ $t("Connect Wallet") }}
           </v-btn>
         </v-col>
       </v-row>
@@ -168,15 +170,17 @@ export default {
     claimAmountErrors() {
       const errors = [];
       if (!this.$v.claimAmount.$dirty) return errors;
-      !this.$v.claimAmount.decimal && errors.push("Invalid amount.");
-      !this.$v.claimAmount.required && errors.push("The amount is required.");
+      !this.$v.claimAmount.decimal &&
+        errors.push(this.$t("ClaimForm.Invalid amount"));
+      !this.$v.claimAmount.required &&
+        errors.push(this.$t("ClaimForm.The amount is required"));
 
       const claimAmountValue = parseFloat(this.$v.claimAmount.$model);
       if (claimAmountValue <= 0) {
-        errors.push("The amount is be gt zero.");
+        errors.push(this.$t("ClaimForm.The amount is be gt zero"));
       }
       if (claimAmountValue > this.state.assets.rewardsBalance) {
-        errors.push("The amount exceeds the balance.");
+        errors.push(this.$t("ClaimForm.The amount exceeds the balance"));
       }
       return errors;
     }
