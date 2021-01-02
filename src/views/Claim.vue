@@ -1,113 +1,125 @@
 <template>
-  <v-card
-    class="d-flex justify-center align-center"
-    color="grey lighten-2"
-    flat
-    height="100%"
-  >
-    <v-card
-      v-if="state.connected"
-      elevation="24"
-      width="80%"
-      color="grey lighten-2"
-    >
-      <v-card class="d-flex flex-column">
-        <v-card-title>
-          <v-avatar size="24" class="mr-2">
-            <img :src="require('@/assets/logo.png')" alt="DOI" />
-          </v-avatar>
-          <span class="title font-weight-light">DOI Balance</span>
-        </v-card-title>
-        <v-card-text>
-          <v-row align="center">
-            <v-col class="display-3" cols="12">
-              {{ state.assets.rewardsBalance }}
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions class="justify-center">
-          <v-btn
-            large
-            color="primary"
-            dark
-            width="80%"
-            @click="openClaimDialog"
-            :disabled="state.assets.rewardsBalance <= 0"
-          >
-            Claim
-          </v-btn>
-          <v-dialog v-model="dialog" persistent max-width="80%">
-            <v-card>
-              <form>
-                <v-card-title>
-                  <span class="headline">Claim</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-text-field
-                    v-model="claimAmount"
-                    :error-messages="claimAmountErrors"
-                    label="Claim Amount"
-                    required
-                    @input="$v.claimAmount.$touch()"
-                    @blur="$v.claimAmount.$touch()"
-                    :autofocus="claimAmountFocus"
-                  ></v-text-field>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn @click="close">
-                    Close
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    class="white--text"
-                    @click="submit"
-                  >
-                    Submit
-                  </v-btn>
-                </v-card-actions>
-              </form>
+  <div class="fill-height">
+    <v-container v-if="state.connected" class="fill-height">
+      <v-row justify="center">
+        <v-col md="6">
+          <v-card class="fill-width">
+            <v-card outlined>
+              <v-card-title>
+                <v-avatar size="24" class="mr-2">
+                  <img :src="require('@/assets/logo.png')" alt="DOI" />
+                </v-avatar>
+                <span class="title font-weight-light">DOI Balance</span>
+              </v-card-title>
+              <v-card-text>
+                <v-row align="center">
+                  <v-col class="display-3" cols="12">
+                    {{ state.assets.rewardsBalance }}
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions class="justify-center">
+                <v-btn
+                  large
+                  color="primary"
+                  dark
+                  width="80%"
+                  @click="openClaimDialog"
+                  :disabled="state.assets.rewardsBalance <= 0"
+                >
+                  Claim
+                </v-btn>
+                <v-dialog v-model="dialog" persistent max-width="600px">
+                  <v-card>
+                    <form>
+                      <v-card-title>
+                        <span class="headline">Claim</span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-text-field
+                          v-model="claimAmount"
+                          :error-messages="claimAmountErrors"
+                          label="Claim Amount"
+                          required
+                          @input="$v.claimAmount.$touch()"
+                          @blur="$v.claimAmount.$touch()"
+                          :autofocus="claimAmountFocus"
+                        ></v-text-field>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn @click="close">
+                          Close
+                        </v-btn>
+                        <v-btn
+                          color="blue darken-1"
+                          class="white--text"
+                          @click="submit"
+                        >
+                          Submit
+                        </v-btn>
+                      </v-card-actions>
+                    </form>
+                  </v-card>
+                </v-dialog>
+              </v-card-actions>
             </v-card>
-          </v-dialog>
-        </v-card-actions>
-      </v-card>
-      <v-card class="d-flex flex-column mt-10 pa-3">
-        <v-menu rounded="rounded" offset-y>
-          <template v-slot:activator="{ attrs, on }">
-            <v-btn
-              color="deep-purple darken-4"
-              class="white--text"
-              v-bind="attrs"
-              v-on="on"
-              width="100%"
-            >
-              <span class="d-inline-block text-truncate" style="width: 200px;">
-                {{ state.address }}
+          </v-card>
+          <v-card justify="center" class="fill-width mt-10">
+            <v-card-title>
+              <span class="title font-weight-light">
+                Current Token Address
               </span>
-            </v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item link>
-              <v-list-item-title @click="resetApp">
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-row align="center">
+                <v-col
+                  class="body-1"
+                  cols="12"
+                  @click="handleCopy(state.address, $event)"
+                >
+                  <p>
+                    {{ state.address }}
+                    <v-icon>mdi-content-copy</v-icon>
+                  </p>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn @click="resetApp">
                 Disconnect Wallet
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-card>
-    </v-card>
-    <v-btn v-if="!state.connected" @click="onConnect">Connect Wallet</v-btn>
-    <v-overlay z-index="9999" opacity="0.7" :value="state.fetching">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
-  </v-card>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-overlay z-index="9999" opacity="0.7" :value="state.fetching">
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container v-if="!state.connected" class="fill-height">
+      <v-row justify="center">
+        <v-col md="6" align="center">
+          <v-btn
+            v-if="!state.connected"
+            x-large
+            color="deep-orange darken-4 white--text"
+            @click="onConnect"
+          >
+            Connect Wallet
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
 import { validationMixin } from "vuelidate";
 import { required, decimal } from "vuelidate/lib/validators";
+import clip from "@/utils/clipboard";
 
 import Web3 from "web3";
 import Web3Modal from "web3modal";
@@ -170,6 +182,11 @@ export default {
     }
   },
   methods: {
+    // 复制地址
+    handleCopy(text, event) {
+      clip(text, event);
+    },
+    // 打开提取框
     openClaimDialog() {
       this.dialog = true;
       this.claimAmountFocus = true;
@@ -311,10 +328,10 @@ export default {
     },
     // 提币 TODO OK
     submit() {
-      this.$v.$touch();
       if (this.$v.$invalid) {
         // error info
       } else {
+        this.$v.$touch();
         // do your submit logic here
         const { web3, address } = this.state;
         this.state.fetching = true;
