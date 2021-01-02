@@ -23,7 +23,7 @@
       </v-card-text>
 
       <v-card-text class="white--text pt-0">
-        The page of community rewards claim.
+        {{ $t("The page of community rewards claim") }}
       </v-card-text>
 
       <v-divider></v-divider>

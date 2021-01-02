@@ -15,5 +15,6 @@ export default {
     "The amount is be gt zero": "提取额度必须大于0",
     "Invalid amount": "不可用的数值",
     "The amount is required": "请填写提取额度"
-  }
+  },
+  "The page of community rewards claim": "这是一个社区奖励提取页面"
 };
