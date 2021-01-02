@@ -46,11 +46,6 @@ export default {
         url: "https://app.daoswap.global"
       },
       {
-        title: "Github",
-        icon: "mdi-github",
-        url: "https://github.com/daoswap-tech"
-      },
-      {
         title: "Twitter",
         icon: "mdi-twitter",
         url: "https://twitter.com/SwapDao"
