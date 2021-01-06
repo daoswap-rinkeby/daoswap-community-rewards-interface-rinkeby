@@ -1,18 +1,29 @@
 import Web3 from "web3";
-import contract from "truffle-contract";
-import { ERC20_CONTRACT as ERC20, CLAIM_CONTRACT as Claim } from "../constants";
+import contract from "@truffle/contract";
+import {
+  ERC20_CONTRACT,
+  CLAIM_CONTRACT,
+  ERC20ContractAddress,
+  ClaimContractAddress
+} from "../constants";
 
 const CONTRACTS = {
-  ERC20,
-  Claim
+  ERC20: {
+    contractJson: ERC20_CONTRACT,
+    address: ERC20ContractAddress
+  },
+  Claim: {
+    contractJson: CLAIM_CONTRACT,
+    address: ClaimContractAddress
+  }
 };
 
-export const getContract = (name, address, web3) => {
-  const contractJson = CONTRACTS[name];
+export const getContract = (name, web3) => {
+  const contractObj = CONTRACTS[name];
   // 定义合约变量
-  const readContract = contract(contractJson);
+  const readContract = contract(contractObj.contractJson);
   readContract.setProvider(web3.currentProvider);
-  return readContract.at(address);
+  return readContract.at(contractObj.address);
 };
 
 /**
