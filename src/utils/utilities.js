@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import contract from "truffle-contract";
 import supportedChains from "./chain";
 import { ERC20_CONTRACT as ERC20, CLAIM_CONTRACT as Claim } from "../constants";
 
@@ -54,17 +53,16 @@ export const parseBalance = (value, decimals = 18) => {
   return ethers.utils.parseUnits(value || "0", decimals);
 };
 
+// 数字转金额格式
+export const formatNumber = s => {
+  s = s.toString();
+  if (/[^0-9\\.]/.test(s)) return "invalid value";
+  return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 export const getContract = (name, address, web3) => {
   const provider = new ethers.providers.Web3Provider(web3.currentProvider);
   const signer = provider.getSigner();
   const contract = CONTRACTS[name];
   return new ethers.Contract(address, contract.abi, signer);
-};
-
-export const getTruffleContract = (name, address, web3) => {
-  const contractJson = CONTRACTS[name];
-  // 定义合约变量
-  const readContract = contract(contractJson);
-  readContract.setProvider(web3.currentProvider);
-  return readContract.at(address);
 };
